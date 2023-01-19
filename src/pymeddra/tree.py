@@ -84,10 +84,9 @@ class Node(BaseModel):
         else:
             return None
 
-    def set_lookup_tables(self, normalizer: function = None) -> None:
-        # set normalizer if supplied
-        if normalizer:
-            self.normalizer = normalizer
+    def set_lookup_tables(self, normalizer: function = lambda x:x) -> None:
+        # set normalizer
+        self.normalizer = normalizer
 
         # get a flat list of all nodes
         self.term_to_nodes = defaultdict(list)
