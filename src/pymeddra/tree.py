@@ -39,12 +39,14 @@ class Node(BaseModel):
     term: str
     level: Level
 
-    parent: Optional[Node] = None
+    parent: Node = None
     children: Dict[str, Node] = {}
 
     # maps for efficient nested children lookups
     id_to_nodes: Optional[DefaultDict[str, List[Node]]] = None
     term_to_nodes: Optional[DefaultDict[str, List[Node]]] = None
+
+    normalizer: function = lambda x: x
 
     def get_parent_at_level(self, target_level: Level) -> Union[Node, None]:
         # check if current node is deeper than target_level
@@ -63,8 +65,9 @@ class Node(BaseModel):
     def lookup_id(self, id: str) -> Union[List[Node], None]:
         # create lookup tables if they do not exists
         if self.id_to_nodes == None:
-            self._set_lookup_tables()
+            self.set_lookup_tables()
         # lookup
+
         if id in self.id_to_nodes:
             return self.id_to_nodes[id]
         else:
@@ -73,14 +76,19 @@ class Node(BaseModel):
     def lookup_term(self, term: str) -> Union[List[Node], None]:
         # create lookup tables if they do not exists
         if self.term_to_nodes == None:
-            self._set_lookup_tables()
+            self.set_lookup_tables()
         # lookup
+        term = self.normalizer(term)
         if term in self.term_to_nodes:
             return self.term_to_nodes[term]
         else:
             return None
 
-    def _set_lookup_tables(self) -> None:
+    def set_lookup_tables(self, normalizer: function = None) -> None:
+        # set normalizer if supplied
+        if normalizer:
+            self.normalizer = normalizer
+
         # get a flat list of all nodes
         self.term_to_nodes = defaultdict(list)
         self.id_to_nodes = defaultdict(list)
@@ -90,7 +98,7 @@ class Node(BaseModel):
         while len(candidates):
             candidate = candidates.pop(0)
             # track nodes
-            self.term_to_nodes[candidate.term].append(candidate)
+            self.term_to_nodes[self.normalizer(candidate.term)].append(candidate)
             self.id_to_nodes[candidate.id].append(candidate)
             # add candidate's children to candidate list
             if candidate.children:

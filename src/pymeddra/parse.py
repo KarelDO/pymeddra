@@ -89,4 +89,10 @@ if __name__ == "__main__":
         "/Users/kldooste/Documents/work/pymeddra/data/meddra_23_0_english/MedAscii"
     )
     print("hello parser")
-    parse_mdhier(data_dir)
+    meddra = parse_mdhier(data_dir)
+    print(meddra.lookup_term("COVID-19 pneumonia"))
+    print(meddra.lookup_term("covid19 pneumonia"))
+    meddra.set_lookup_tables(normalizer=lambda x: x.lower())
+
+    print(meddra.lookup_term("COVID-19 pneumonia"))
+    print(meddra.lookup_term("covid-19 pneumonia"))
