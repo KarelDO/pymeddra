@@ -107,3 +107,4 @@ if __name__ == "__main__":
     print(meddra.terms_equivalent("covid-19 pneumonia", "Pneumonia measles")) #true, via 'viral lower respiratory tract infections'
     print(meddra.terms_equivalent("covid-19 pneumonia", "Asymptomatic COVID-19")) #true, via 'coronavirus infections'
     print(meddra.terms_equivalent("covid-19 pneumonia", "pain")) #false
+    print(meddra.terms_equivalent("covid-19 pneumonia", "nonsensewords")) #false

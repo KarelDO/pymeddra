@@ -120,6 +120,9 @@ class Node(BaseModel):
         # lookup both terms
         term1_nodes = self.lookup_term(term1)
         term2_nodes = self.lookup_term(term2)
+        # if at least one term not found
+        if not term1_nodes or not term2_nodes:
+            return False
         # compare all nodes
         for node1 in term1_nodes:
             for node2 in term2_nodes:

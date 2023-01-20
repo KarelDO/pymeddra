@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pymeddra"
-version = "0.0.4"
+version = "0.0.5"
 authors = [
   { name="Karel D'Oosterlinck", email="kareldoosterlinck@gmail.com" },
 ]
