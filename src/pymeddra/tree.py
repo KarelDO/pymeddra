@@ -43,9 +43,12 @@ class Node(BaseModel):
     children: Dict[str, Node] = {}
 
     # maps for efficient nested children lookups
+    # typically only used for the root node
     id_to_nodes: Optional[DefaultDict[str, List[Node]]] = None
     term_to_nodes: Optional[DefaultDict[str, List[Node]]] = None
 
+    # text normalizer to build lookup tables
+    # typically only used for the root node
     normalizer: function = lambda x: x
 
     def get_parent_at_level(self, target_level: Level) -> Union[Node, None]:
@@ -76,7 +79,7 @@ class Node(BaseModel):
     def lookup_term(self, term: str) -> Union[List[Node], None]:
         # create lookup tables if they do not exists
         if self.term_to_nodes == None:
-            self.set_lookup_tables()
+            raise RuntimeError("First set the lookup tables using 'set_lookup_tables'.")
         # lookup
         term = self.normalizer(term)
         if term in self.term_to_nodes:
@@ -84,7 +87,7 @@ class Node(BaseModel):
         else:
             return None
 
-    def set_lookup_tables(self, normalizer: function = lambda x:x) -> None:
+    def set_lookup_tables(self, normalizer: function = lambda x: x) -> None:
         # set normalizer
         self.normalizer = normalizer
 
@@ -103,6 +106,26 @@ class Node(BaseModel):
             if candidate.children:
                 candidates.extend(candidate.children.values())
         return None
+
+    def is_equivalent_node(self, other: Node) -> bool:
+        # return true if two nodes are the same, siblings or in a parent-child relation
+        return (
+            (self == other)
+            or (self.parent == other)
+            or (self == other.parent)
+            or (self.parent == other.parent)
+        )
+
+    def terms_equivalent(self, term1: str, term2:str) -> bool:
+        # lookup both terms
+        term1_nodes = self.lookup_term(term1)
+        term2_nodes = self.lookup_term(term2)
+        # compare all nodes
+        for node1 in term1_nodes:
+            for node2 in term2_nodes:
+                if node1.is_equivalent_node(node2):
+                    return True
+        return False
 
     def __key(self):
         return (self.id, self.term, self.parent, len(self.children))

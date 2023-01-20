@@ -90,9 +90,20 @@ if __name__ == "__main__":
     )
     print("hello parser")
     meddra = parse_mdhier(data_dir)
+    meddra.set_lookup_tables()
     print(meddra.lookup_term("COVID-19 pneumonia"))
     print(meddra.lookup_term("covid19 pneumonia"))
-    meddra.set_lookup_tables(normalizer=lambda x: x.lower())
 
+    meddra.set_lookup_tables(normalizer=lambda x: x.lower())
     print(meddra.lookup_term("COVID-19 pneumonia"))
     print(meddra.lookup_term("covid-19 pneumonia"))
+
+    nodes1 = meddra.lookup_term("covid-19 pneumonia")
+    nodes2 = meddra.lookup_term("Pneumonia measles")
+
+    print(nodes1)
+    print(nodes2)
+
+    print(meddra.terms_equivalent("covid-19 pneumonia", "Pneumonia measles")) #true, via 'viral lower respiratory tract infections'
+    print(meddra.terms_equivalent("covid-19 pneumonia", "Asymptomatic COVID-19")) #true, via 'coronavirus infections'
+    print(meddra.terms_equivalent("covid-19 pneumonia", "pain")) #false
