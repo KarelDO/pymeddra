@@ -88,23 +88,33 @@ if __name__ == "__main__":
     data_dir = (
         "/Users/kldooste/Documents/work/pymeddra/data/meddra_23_0_english/MedAscii"
     )
-    print("hello parser")
+    # print("hello parser")
+    
     meddra = parse_mdhier(data_dir)
-    meddra.set_lookup_tables()
-    print(meddra.lookup_term("COVID-19 pneumonia"))
-    print(meddra.lookup_term("covid19 pneumonia"))
+    # meddra.set_lookup_tables()
+    # print(meddra.lookup_term("COVID-19 pneumonia"))
+    # print(meddra.lookup_term("covid19 pneumonia"))
 
     meddra.set_lookup_tables(normalizer=lambda x: x.lower())
-    print(meddra.lookup_term("COVID-19 pneumonia"))
-    print(meddra.lookup_term("covid-19 pneumonia"))
+    # print(meddra.lookup_term("COVID-19 pneumonia"))
+    # print(meddra.lookup_term("covid-19 pneumonia"))
 
-    nodes1 = meddra.lookup_term("covid-19 pneumonia")
-    nodes2 = meddra.lookup_term("Pneumonia measles")
+    # nodes1 = meddra.lookup_term("covid-19 pneumonia")
+    # nodes2 = meddra.lookup_term("Pneumonia measles")
 
-    print(nodes1)
-    print(nodes2)
+    # print(nodes1)
+    # print(nodes2)
+
 
     print(meddra.terms_equivalent("covid-19 pneumonia", "Pneumonia measles")) #true, via 'viral lower respiratory tract infections'
     print(meddra.terms_equivalent("covid-19 pneumonia", "Asymptomatic COVID-19")) #true, via 'coronavirus infections'
     print(meddra.terms_equivalent("covid-19 pneumonia", "pain")) #false
-    print(meddra.terms_equivalent("covid-19 pneumonia", "nonsensewords")) #false
+    print(meddra.terms_equivalent("covid-19 pneumonia", "nonsensewords")) #none
+
+    # print(meddra.lookup_term('back pain'))   
+    # parent =  meddra.lookup_term('back pain')[0].parent
+    # print(parent)    
+    # print(parent.children[list(parent.children.keys())[7]])    
+    # print()
+    # print(parent.parent)    
+    # print(parent.parent.children[list(parent.parent.children.keys())[2]])    
